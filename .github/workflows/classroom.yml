@@ -19,7 +19,7 @@ jobs:
       with:
         test-name: Q10_44 Test
         setup-command: javac Q10_44/*.java
-        command: java -cp Q10_44 GroceryStoreClient
+        command: java -cp Q10_44/
         input: ''
         expected-output: "Generating gs1 Grocery Store named Eddie's, annual revenue
           of 3523450.45, not a chain\nGenerating gs2 Grocery Store named Giant 43,
