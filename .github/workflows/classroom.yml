@@ -1,0 +1,72 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Q10_44 Test
+      id: q10_44-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_44 Test
+        setup-command: javac Q10_44/*.java
+        command: java -cp Q10_44 GroceryStoreClient
+        input: ''
+        expected-output: "Generating gs1 Grocery Store named Eddie's, annual revenue
+          of 3523450.45, not a chain\nGenerating gs2 Grocery Store named Giant 43,
+          annual revenue of 4321090.65, chain\n\nPrinting both grocery stores: \nname:
+          Eddie's; annual revenues: 3523450.45; is part of a chain: false\nname: Giant
+          43; annual revenues: 4321090.65; is part of a chain: true\n\nSetting gs2
+          annual revenue to 3523450.45 and chain to false\nChecking to see if the
+          two stores are equal...\ngs1 and gs2 are not equal\n\nSetting gs2 name to
+          Eddie's\nChecking to see if the two stores are equal...\ngs1 and gs2 are
+          now equal\n\nPrinting out annual taxes for gs1...\nAnnual taxes for Eddie's
+          are $211,407.03"
+        comparison-method: contains
+        timeout: 10
+        max-score: 5
+    - name: Q10_45 Test
+      id: q10_45-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_45 Test
+        setup-command: javac Q10_45/*.java
+        command: java -cp Q10_45 RestaurantClient
+        input: ''
+        expected-output: |-
+          Generating new restraurant r1 named Bistro 120, 12000 people served, meals costing approx $25.60
+          Generating new restaurant r2 named Chez Louis, 9800 people served, meals costing approx $39.85
+
+          Printing both restaurants...
+          name: Bistro 123; number of people served: 12000; average price per person: 25.6
+          name: Chez Louis; number of people served: 9800; average price per person: 39.85
+
+          Setting r2 people served to 1200 and average price per meal to 25.599999
+          Checking to see if the two restaurants are equal...
+          r1 and r2 are not equal
+
+          Setting the name of r2 to Bistro 123...
+          Checking to see if the two restaurants are equal...
+          r1 and r2 are now equal
+
+          Calculating the average taxes for r1...
+          Average annual taxes for Bistro 123 are $18,432.00
+        comparison-method: contains
+        timeout: 10
+        max-score: 5
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        Q10_44-TEST_RESULTS: "${{steps.q10_44-test.outputs.result}}"
+        Q10_45-TEST_RESULTS: "${{steps.q10_45-test.outputs.result}}"
+      with:
+        runners: q10_44-test,q10_45-test
